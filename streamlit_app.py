@@ -1,5 +1,5 @@
 import streamlit as st
-import openai
+from groq import Groq
 import PyPDF2
 
 # Page config
@@ -9,8 +9,8 @@ st.title("📄 Sonata Defect Release Note Generator")
 
 st.write("Upload a JIRA defect PDF or paste details to generate a TW-compliant Release Note.")
 
-# Load API key
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+# Load Groq API key
+client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
 # Input options
 tab1, tab2 = st.tabs(["📄 Upload PDF", "✍️ Paste Text"])
@@ -112,12 +112,14 @@ Provide ONLY the final Defect Release Note.
 """
 
         with st.spinner("Generating Release Note..."):
-            response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",
-                messages=[{"role": "user", "content": prompt}]
+            response = client.chat.completions.create(
+                model="llama3-70b-8192",
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
             )
 
-            output = response["choices"][0]["message"]["content"]
+            output = response.choices[0].message.content
 
         st.subheader("✅ Generated Release Note")
         st.text_area("Output", output, height=400)
