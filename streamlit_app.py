@@ -122,28 +122,67 @@ if st.button("🚀 Generate Release Note"):
         st.stop()
 
     prompt = f"""
-Act as a Business Analyst preparing a {selected_metadata['label']} ({release_note_type}) for Sonata, strictly following company {selected_metadata['guideline']}.
-
-Your task is to convert the provided {selected_metadata['input_label'].lower()} details into a high-quality, client-facing {selected_metadata['label']}.
+Act as a Senior Business Analyst preparing a Defect Release Note (DRN) for Sonata.
 
 ----------------------------------
 STRICT TEMPLATE (DO NOT CHANGE HEADINGS):
 
-{selected_metadata['template']}
+Background
+
+Change Implemented
+
+Dependencies/Impact
 
 ----------------------------------
-WRITING RULES (MANDATORY):
-{selected_metadata['rules']}
+
+WRITING STYLE REQUIREMENTS (VERY IMPORTANT):
+
+The response must strictly follow this writing style:
+
+BACKGROUND:
+- Start with: "When a user..."
+- Clearly describe:
+  - What process was executed
+  - What failed and why
+  - What limitation caused the issue
+- Include expected behaviour using:
+  "Ideally, the system should have..."
+
+CHANGE IMPLEMENTED:
+- Start with:
+  "This issue occurred because..."
+- Clearly explain:
+  - Root cause in business terms
+  - What has been changed
+- Include resolution using:
+  "To resolve this issue..."
+- End with:
+  "After these changes..."
+
+DEPENDENCIES/IMPACT:
+- Keep concise
+- Format strictly like:
+  "This change only impacts..."
 
 ----------------------------------
-INPUT:
-{input_text[:6000]}
+
+QUALITY RULES:
+
+- Use business-friendly language
+- Avoid unnecessary technical jargon
+- Ensure cause, fix, and outcome are clearly linked
+- Maintain clear paragraph structure (not bullet points)
 
 ----------------------------------
+
+INPUT DEFECT DETAILS:
+{input_text[:5000]}
+
+----------------------------------
+
 OUTPUT:
-Provide ONLY the final {selected_metadata['label']}.
+Provide ONLY the final DRN.
 """
-
     try:
         with st.spinner("Generating Release Note..."):
             response = client.chat.completions.create(
