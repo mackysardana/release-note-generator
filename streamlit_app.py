@@ -95,8 +95,10 @@ ERN RULES:
   4) Region/business impact sentence (global or region-specific)
   5) Glossary note when terms are used:
      "Note - For more information on the following terms - <terms>, please refer to Sonata Glossary."
-- Overview should be written as 2-4 concise paragraphs (not a heading-only section) and must clearly separate current vs prior behavior.
-- Key Features must contain the exact subheading "Demonstrable Additions" followed by concise bullet points.
+- Overview should be written as 3-5 detailed paragraphs (not a heading-only section) and must clearly separate current vs prior behavior.
+- Overview should include concrete business context, impacted users/processes, scope boundaries, and an explicit before-vs-after comparison.
+- Key Features must contain the exact subheading "Demonstrable Additions" followed by detailed bullet points.
+- Include 6-10 feature bullets where possible, each describing the capability, trigger/context, and business value/outcome.
 - In Demonstrable Additions, include business-observable outcomes such as:
   - investor type is determined using active owner relationships only;
   - deceased/deleted owner relationships are excluded from owner counts;
@@ -122,12 +124,13 @@ INPUT SOURCE (Design/BSD/IA/Jira):
 OUTPUT:
 For ===RELEASE_NOTES=== provide ONLY the final ERN content.
 
-For ===OVERVIEW=== provide a clear and simple summary that includes:
+For ===OVERVIEW=== provide a detailed yet readable summary that includes:
 - issue/requirement context,
 - as-is behaviour,
 - to-be behaviour,
-- business outcome.
-Write in 1-3 concise paragraphs so any reader can understand quickly.
+- impacted users/processes and scope,
+- business outcome and expected operational benefit.
+Write in 2-4 well-developed paragraphs so any reader can understand quickly.
 
 For ===TESTING_SCOPE=== follow these requirements exactly:
 - Cover positive, negative, edge, regression, data integrity, and performance (if applicable).
