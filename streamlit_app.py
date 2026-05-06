@@ -297,8 +297,9 @@ if st.button("🚀 Generate Release Notes, Overview and Testing Scope"):
             st.subheader(f"✅ Generated {selected_metadata['label']}")
         if release_note_type in {"ERN", "DRN"}:
             parsed_output = parse_sections(output)
+            overview_label = "High Level Details" if release_note_type == "ERN" else "Overview"
             st.text_area("Release Notes", parsed_output["release_notes"] or output, height=300)
-            st.text_area("Overview", parsed_output["overview"], height=220)
+            st.text_area(overview_label, parsed_output["overview"], height=220)
             st.text_area("Testing Scope", parsed_output["testing_scope"], height=350)
         else:
             st.text_area("Output", output, height=400)
