@@ -3,11 +3,11 @@ from groq import Groq
 import PyPDF2
 
 # Page config
-st.set_page_config(page_title="Sonata Release Note Generator", layout="wide")
+st.set_page_config(page_title="Sonata Change Communication Studio", layout="wide")
 
-st.title("📄 Sonata Release Note Generator")
+st.title("📘 Sonata Change Communication Studio")
 st.write(
-    "Upload a JIRA/Design/BSD/IA PDF or paste details to generate Release Notes, Overview, and Testing Scope."
+    "Upload a JIRA/Design/BSD/IA PDF or paste details to generate Release Notes with supporting Overview and Testing Scope."
 )
 
 # Load Groq API key
@@ -202,7 +202,19 @@ INPUT DEFECT DETAILS:
 ----------------------------------
 
 OUTPUT:
-Provide ONLY the final DRN.
+You must generate THREE sections in this exact order and exact markers:
+===RELEASE_NOTES===
+<content>
+===OVERVIEW===
+<content>
+===TESTING_SCOPE===
+<content>
+
+For ===RELEASE_NOTES=== provide ONLY the final DRN in the strict template above (Background, Change Implemented, Dependencies/Impact) with no extra headings.
+
+For ===OVERVIEW=== provide a concise business summary (2-3 paragraphs) covering issue context, prior behavior, updated behavior, and expected outcome.
+
+For ===TESTING_SCOPE=== provide focused validation scenarios for this defect including: positive, negative, boundary value (99B vs 100B+), regression impact, and data validation checks.
 """
 
 
@@ -280,10 +292,10 @@ if st.button("🚀 Generate Release Notes, Overview and Testing Scope"):
 
             output = response.choices[0].message.content
             st.subheader(f"✅ Generated {selected_metadata['label']}")
-        if release_note_type == "ERN":
+        if release_note_type in {"ERN", "DRN"}:
             parsed_output = parse_sections(output)
             st.text_area("Release Notes", parsed_output["release_notes"] or output, height=300)
-            st.text_area("Overview", parsed_output["overview"], height=200)
+            st.text_area("Overview", parsed_output["overview"], height=220)
             st.text_area("Testing Scope", parsed_output["testing_scope"], height=350)
         else:
             st.text_area("Output", output, height=400)
