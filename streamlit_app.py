@@ -225,39 +225,6 @@ def _normalise_marker(line: str) -> str:
     return line.strip().replace("*", "").replace("`", "")
 
 
-def _inject_overview_into_ern_release_notes(release_notes: str, overview: str) -> str:
-    if not release_notes or not overview:
-        return release_notes
-
-    lines = release_notes.splitlines()
-    heading_indexes = {
-        line.strip(): idx
-        for idx, line in enumerate(lines)
-        if line.strip() in {
-            "Title",
-            "Overview",
-            "Key Features",
-            "Menu Path",
-            "Implementation Considerations",
-            "Impact/Dependencies",
-        }
-    }
-
-    overview_idx = heading_indexes.get("Overview")
-    if overview_idx is None:
-        return release_notes
-
-    next_section_idx = min(
-        [idx for name, idx in heading_indexes.items() if idx > overview_idx],
-        default=len(lines),
-    )
-
-    existing_overview = "\n".join(lines[overview_idx + 1:next_section_idx]).strip()
-    if existing_overview:
-        return release_notes
-
-    merged = lines[: overview_idx + 1] + [overview.strip(), ""] + lines[next_section_idx:]
-    return "\n".join(merged).strip()
 
 
 def parse_sections(output: str, note_type: str):
@@ -279,11 +246,6 @@ def parse_sections(output: str, note_type: str):
             sections[current_key] += (line + "\n")
 
     parsed = {k: v.strip() for k, v in sections.items()}
-
-    if note_type == "ERN":
-        parsed["release_notes"] = _inject_overview_into_ern_release_notes(
-            parsed["release_notes"], parsed["overview"]
-        )
 
     return parsed
 
