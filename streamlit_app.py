@@ -32,7 +32,7 @@ Dependencies/Impact""",
         "input_label": "Enhancement",
         "title": "Enhancement",
         "guideline": "ERN Authoring Guidelines",
-        "template": """Summary
+        "template": """Title
 Overview
 Key Features
 Menu Path
@@ -63,7 +63,7 @@ def build_prompt(note_type: str, source_text: str) -> str:
 Act as a Senior Business Analyst and Technical Writer preparing an Enhancement Release Note (ERN) for Sonata.
 
 STRICT OUTPUT FORMAT (use these headings exactly):
-Summary
+Title
 Overview
 Key Features
 Menu Path
@@ -73,12 +73,15 @@ Impact/Dependencies
 ERN RULES:
 - Use business-friendly language and avoid technical implementation detail unless needed for business clarity.
 - Expand abbreviation at first use, e.g. "Enhancement Release Note (ERN)".
-- Summary must be a single-line title in this style:
-  "<Region if region-specific> - <Business Area> - <Enhancement> to <Business Advantage>"
+- Title must be a single-line title matching these styles (do not add bullets or numbering):
+  - "Sonata’s Account Investor Type determination enhanced to consider only active owner relationships, ensuring correct transition from Joint to Individual for accounts with deceased owners and thus improving ownership accuracy"
+  - "Australian Superannuation - Enhancements to Reconcile Unpaid Refunds and Identify Source of Refund Reports to Improve CTR Refund Reconciliation and Reporting Accuracy"
+  - "Australian Superannuation - Sonata enhancement introduces Reconcile Unpaid Refunds and Identify Source of Refund reports, improving visibility of CTR refund, enabling reconciliation, monitoring timelines, analysing system vs manual refund trends"
+  - "Australian Superannuation - Load Contribution Schedule (SuperStream) process enhancement enables automated handling of CTR exceptions using configurable Schedule Auto Rejection Rules to support Pay Day Super compliance"
 - Overview must include:
   1) What was enhanced (clear change overview)
-  2) The rationale sentence beginning exactly with: "The rationale behind this enhancement is..."
-  3) Previous behaviour sentence beginning exactly with: "Prior to this enhancement..."
+  2) The rationale sentence beginning exactly with: "The rationale behind this enhancement is..." (must start on a new line/paragraph)
+  3) Previous behaviour sentence beginning exactly with: "Prior to this enhancement..." (must start on a new line/paragraph)
   4) Region/business impact sentence (global or region-specific)
   5) Glossary note when terms are used:
      "Note - For more information on the following terms - <terms>, please refer to Sonata Glossary."
