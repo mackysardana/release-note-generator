@@ -76,15 +76,20 @@ ERN RULES:
 - Summary must be a single-line title in this style:
   "<Region if region-specific> - <Business Area> - <Enhancement> to <Business Advantage>"
 - Overview must include:
-  1) What was enhanced
-  2) The rationale: "The rationale behind this enhancement is..."
-  3) Previous behaviour: "Prior to this enhancement..."
+  1) What was enhanced (clear change overview)
+  2) The rationale sentence beginning exactly with: "The rationale behind this enhancement is..."
+  3) Previous behaviour sentence beginning exactly with: "Prior to this enhancement..."
   4) Region/business impact sentence (global or region-specific)
   5) Glossary note when terms are used:
      "Note - For more information on the following terms - <terms>, please refer to Sonata Glossary."
-- Overview should be written as 2-4 concise paragraphs (not a heading-only section).
+- Overview should be written as 2-4 concise paragraphs (not a heading-only section) and must clearly separate current vs prior behavior.
 - Key Features must contain the exact subheading "Demonstrable Additions" followed by concise bullet points.
-- Key Features bullets should be client-observable outcomes (what the user sees), not implementation internals.
+- In Demonstrable Additions, include business-observable outcomes such as:
+  - investor type is determined using active owner relationships only;
+  - deceased/deleted owner relationships are excluded from owner counts;
+  - account investor type changes to Individual when only one active owner remains;
+  - account investor type remains Joint when multiple active owners remain.
+- You may mention enabling mechanisms (e.g., relationship-status tagging like activeRelationship=true) only when essential for business understanding; keep implementation detail minimal.
 - Menu Path must include Graphical Menu and Classic Menu when available from input. If not available, state "Not provided in source documentation.".
 - Implementation Considerations must never be empty. Use "No configuration required." only if no dependencies are indicated.
 - Impact/Dependencies must never be blank and should mention downstream impact, regression scope, and performance impact where relevant.
