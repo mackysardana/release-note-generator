@@ -221,7 +221,46 @@ For ===TESTING_SCOPE=== provide focused validation scenarios for this defect inc
 """
 
 
-def parse_sections(output: str):
+def _normalise_marker(line: str) -> str:
+    return line.strip().replace("*", "").replace("`", "")
+
+
+def _inject_overview_into_ern_release_notes(release_notes: str, overview: str) -> str:
+    if not release_notes or not overview:
+        return release_notes
+
+    lines = release_notes.splitlines()
+    heading_indexes = {
+        line.strip(): idx
+        for idx, line in enumerate(lines)
+        if line.strip() in {
+            "Title",
+            "Overview",
+            "Key Features",
+            "Menu Path",
+            "Implementation Considerations",
+            "Impact/Dependencies",
+        }
+    }
+
+    overview_idx = heading_indexes.get("Overview")
+    if overview_idx is None:
+        return release_notes
+
+    next_section_idx = min(
+        [idx for name, idx in heading_indexes.items() if idx > overview_idx],
+        default=len(lines),
+    )
+
+    existing_overview = "\n".join(lines[overview_idx + 1:next_section_idx]).strip()
+    if existing_overview:
+        return release_notes
+
+    merged = lines[: overview_idx + 1] + [overview.strip(), ""] + lines[next_section_idx:]
+    return "\n".join(merged).strip()
+
+
+def parse_sections(output: str, note_type: str):
     sections = {"release_notes": "", "overview": "", "testing_scope": ""}
     markers = {
         "===RELEASE_NOTES===": "release_notes",
@@ -231,14 +270,22 @@ def parse_sections(output: str):
 
     current_key = None
     for line in output.splitlines():
-        marker_key = markers.get(line.strip())
+        normalised = _normalise_marker(line)
+        marker_key = markers.get(normalised)
         if marker_key:
             current_key = marker_key
             continue
         if current_key:
             sections[current_key] += (line + "\n")
 
-    return {k: v.strip() for k, v in sections.items()}
+    parsed = {k: v.strip() for k, v in sections.items()}
+
+    if note_type == "ERN":
+        parsed["release_notes"] = _inject_overview_into_ern_release_notes(
+            parsed["release_notes"], parsed["overview"]
+        )
+
+    return parsed
 
 
 input_text = ""
@@ -296,7 +343,7 @@ if st.button("🚀 Generate Release Notes, Overview and Testing Scope"):
             output = response.choices[0].message.content
             st.subheader(f"✅ Generated {selected_metadata['label']}")
         if release_note_type in {"ERN", "DRN"}:
-            parsed_output = parse_sections(output)
+            parsed_output = parse_sections(output, release_note_type)
             overview_label = "High Level Details" if release_note_type == "ERN" else "Overview"
             st.text_area("Release Notes", parsed_output["release_notes"] or output, height=300)
             st.text_area(overview_label, parsed_output["overview"], height=220)
