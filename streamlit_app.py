@@ -88,17 +88,19 @@ ERN RULES:
   - "Australian Superannuation - Enhancements to Reconcile Unpaid Refunds and Identify Source of Refund Reports to Improve CTR Refund Reconciliation and Reporting Accuracy"
   - "Australian Superannuation - Sonata enhancement introduces Reconcile Unpaid Refunds and Identify Source of Refund reports, improving visibility of CTR refund, enabling reconciliation, monitoring timelines, analysing system vs manual refund trends"
   - "Australian Superannuation - Load Contribution Schedule (SuperStream) process enhancement enables automated handling of CTR exceptions using configurable Schedule Auto Rejection Rules to support Pay Day Super compliance"
-- Overview must include:
-  1) What was enhanced (clear change overview)
-  2) The rationale sentence beginning exactly with: "The rationale behind this enhancement is..." (must start on a new line/paragraph)
-  3) Previous behaviour sentence beginning exactly with: "Prior to this enhancement..." (must start on a new line/paragraph)
-  4) Region/business impact sentence (global or region-specific)
-  5) Glossary note when terms are used:
+- Overview must include, in this order:
+  1) What was enhanced (clear change overview with business context)
+  2) A dedicated rationale paragraph beginning exactly with: "The rationale behind this enhancement is..."
+  3) A dedicated prior-state paragraph beginning exactly with: "Prior to this enhancement..."
+  4) A clear to-be behavior paragraph describing what changes now and for whom
+  5) Region/business impact sentence (global or region-specific)
+  6) Glossary note when terms are used:
      "Note - For more information on the following terms - <terms>, please refer to Sonata Glossary."
-- Overview should be written as 3-5 detailed paragraphs (not a heading-only section) and must clearly separate current vs prior behavior.
-- Overview should include concrete business context, impacted users/processes, scope boundaries, and an explicit before-vs-after comparison.
-- Key Features must contain the exact subheading "Demonstrable Additions" followed by detailed bullet points.
-- Include 6-10 feature bullets where possible, each describing the capability, trigger/context, and business value/outcome.
+- Overview should be written as 4-6 detailed paragraphs and must clearly separate as-is vs to-be behavior.
+- Overview should include concrete business context, impacted users/processes, scope boundaries, explicit before-vs-after comparison, and operational outcome.
+- The Overview must feel narrative and publication-ready, not generic; avoid one-line paragraphs.
+- Key Features must contain the exact subheading "Demonstrable Additions" followed by detailed bullet points (no numbering).
+- Include 8-12 feature bullets where possible, each describing: capability, trigger/context, prior limitation addressed, and business value/outcome.
 - In Demonstrable Additions, include business-observable outcomes such as:
   - investor type is determined using active owner relationships only;
   - deceased/deleted owner relationships are excluded from owner counts;
@@ -126,11 +128,12 @@ For ===RELEASE_NOTES=== provide ONLY the final ERN content.
 
 For ===OVERVIEW=== provide a detailed yet readable summary that includes:
 - issue/requirement context,
+- rationale for change,
 - as-is behaviour,
 - to-be behaviour,
 - impacted users/processes and scope,
 - business outcome and expected operational benefit.
-Write in 2-4 well-developed paragraphs so any reader can understand quickly.
+Write in 4-6 well-developed paragraphs so any reader can understand quickly.
 
 For ===TESTING_SCOPE=== follow these requirements exactly:
 - Cover positive, negative, edge, regression, data integrity, and performance (if applicable).
