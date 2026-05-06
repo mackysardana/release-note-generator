@@ -6,7 +6,9 @@ import PyPDF2
 st.set_page_config(page_title="Sonata Release Note Generator", layout="wide")
 
 st.title("📄 Sonata Release Note Generator")
-st.write("Upload a JIRA/Design/BSD/IA PDF or paste details to generate a TW-compliant Release Note.")
+st.write(
+    "Upload a JIRA/Design/BSD/IA PDF or paste details to generate Release Notes, Overview, and Testing Scope."
+)
 
 # Load Groq API key
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
@@ -60,7 +62,15 @@ def extract_text_from_pdf(file):
 def build_prompt(note_type: str, source_text: str) -> str:
     if note_type == "ERN":
         return f"""
-Act as a Senior Business Analyst and Technical Writer preparing an Enhancement Release Note (ERN) for Sonata.
+Act as a Senior Business Analyst, Technical Writer, and QA Lead preparing outputs for Sonata.
+
+You must generate THREE sections in this exact order and exact markers:
+===RELEASE_NOTES===
+<content>
+===OVERVIEW===
+<content>
+===TESTING_SCOPE===
+<content>
 
 STRICT OUTPUT FORMAT (use these headings exactly):
 Title
@@ -110,11 +120,35 @@ INPUT SOURCE (Design/BSD/IA/Jira):
 {source_text[:12000]}
 
 OUTPUT:
-Provide ONLY the final ERN content.
+For ===RELEASE_NOTES=== provide ONLY the final ERN content.
+
+For ===OVERVIEW=== provide a clear and simple summary that includes:
+- issue/requirement context,
+- as-is behaviour,
+- to-be behaviour,
+- business outcome.
+Write in 1-3 concise paragraphs so any reader can understand quickly.
+
+For ===TESTING_SCOPE=== follow these requirements exactly:
+- Cover positive, negative, edge, regression, data integrity, and performance (if applicable).
+- Use structured format with Scenario ID, Scenario Description, Pre-conditions, Test Steps (high level), Expected Result.
+- Pay special attention to backward compatibility, downstream/report impact, DB validations, and batch/job/process impact.
+- Include SQL validation queries and sample test-data conditions if applicable.
+- Keep concise but complete. Avoid generic statements.
+- Assume Sonata is a financial platform.
+- Output only test scenarios (no theory).
 """
 
     return f"""
-Act as a Senior Business Analyst preparing a Defect Release Note (DRN) for Sonata.
+Act as a Senior Business Analyst and QA Lead preparing outputs for Sonata.
+
+You must generate THREE sections in this exact order and exact markers:
+===RELEASE_NOTES===
+<content>
+===OVERVIEW===
+<content>
+===TESTING_SCOPE===
+<content>
 
 STRICT TEMPLATE (DO NOT CHANGE HEADINGS):
 Background
@@ -133,8 +167,44 @@ INPUT DEFECT DETAILS:
 {source_text[:12000]}
 
 OUTPUT:
-Provide ONLY the final DRN.
+For ===RELEASE_NOTES=== provide ONLY the final DRN.
+
+For ===OVERVIEW=== provide a clear and simple summary that includes:
+- issue/requirement context,
+- as-is behaviour,
+- to-be behaviour,
+- business outcome.
+Write in 1-3 concise paragraphs so any reader can understand quickly.
+
+For ===TESTING_SCOPE=== follow these requirements exactly:
+- Cover positive, negative, edge, regression, data integrity, and performance (if applicable).
+- Use structured format with Scenario ID, Scenario Description, Pre-conditions, Test Steps (high level), Expected Result.
+- Pay special attention to backward compatibility, downstream/report impact, DB validations, and batch/job/process impact.
+- Include SQL validation queries and sample test-data conditions if applicable.
+- Keep concise but complete. Avoid generic statements.
+- Assume Sonata is a financial platform.
+- Output only test scenarios (no theory).
 """
+
+
+def parse_sections(output: str):
+    sections = {"release_notes": "", "overview": "", "testing_scope": ""}
+    markers = {
+        "===RELEASE_NOTES===": "release_notes",
+        "===OVERVIEW===": "overview",
+        "===TESTING_SCOPE===": "testing_scope",
+    }
+
+    current_key = None
+    for line in output.splitlines():
+        marker_key = markers.get(line.strip())
+        if marker_key:
+            current_key = marker_key
+            continue
+        if current_key:
+            sections[current_key] += (line + "\n")
+
+    return {k: v.strip() for k, v in sections.items()}
 
 
 input_text = ""
@@ -164,7 +234,7 @@ with tab2:
         input_text = manual_text
 
 # Generate button
-if st.button("🚀 Generate Release Note"):
+if st.button("🚀 Generate Release Notes, Overview and Testing Scope"):
 
     if not input_text.strip():
         st.warning("Please upload PDF(s) or paste details.")
@@ -176,7 +246,7 @@ if st.button("🚀 Generate Release Note"):
 
     prompt = build_prompt(release_note_type, input_text)
     try:
-        with st.spinner("Generating Release Note..."):
+        with st.spinner("Generating Release Notes, Overview and Testing Scope..."):
             response = client.chat.completions.create(
                 model="llama-3.3-70b-versatile",
                 messages=[
@@ -190,13 +260,16 @@ if st.button("🚀 Generate Release Note"):
             )
 
             output = response.choices[0].message.content
+            parsed_output = parse_sections(output)
 
         st.subheader(f"✅ Generated {selected_metadata['label']}")
-        st.text_area("Output", output, height=500)
+        st.text_area("Release Notes", parsed_output["release_notes"] or output, height=300)
+        st.text_area("Overview", parsed_output["overview"], height=200)
+        st.text_area("Testing Scope", parsed_output["testing_scope"], height=350)
 
         file_name = f"{release_note_type.lower()}_release_note.txt"
         st.download_button(
-            label="⬇️ Download Release Note",
+            label="⬇️ Download Full Output",
             data=output,
             file_name=file_name,
         )
