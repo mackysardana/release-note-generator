@@ -140,50 +140,66 @@ For ===TESTING_SCOPE=== follow these requirements exactly:
 """
 
     return f"""
-Act as a Senior Business Analyst and QA Lead preparing outputs for Sonata.
+Act as a Senior Business Analyst preparing a Defect Release Note (DRN) for Sonata.
 
-You must generate THREE sections in this exact order and exact markers:
-===RELEASE_NOTES===
-<content>
-===OVERVIEW===
-<content>
-===TESTING_SCOPE===
-<content>
-
+----------------------------------
 STRICT TEMPLATE (DO NOT CHANGE HEADINGS):
+
 Background
+
 Change Implemented
+
 Dependencies/Impact
 
-WRITING STYLE REQUIREMENTS:
-- Background starts with "When a user..."
-- Include expected behaviour with: "Ideally, the system should have..."
-- Change Implemented starts with "This issue occurred because..."
-- Include "To resolve this issue..." and end with "After these changes..."
-- Dependencies/Impact format: "This change only impacts..."
-- Use business-friendly language and clear cause/fix/outcome linkage.
+----------------------------------
+
+WRITING STYLE REQUIREMENTS (VERY IMPORTANT):
+
+The response must strictly follow this writing style:
+
+BACKGROUND:
+- Start with: "When a user..."
+- Clearly describe:
+  - What process was executed
+  - What failed and why
+  - What limitation caused the issue
+- Include expected behaviour using:
+  "Ideally, the system should have..."
+
+CHANGE IMPLEMENTED:
+- Start with:
+  "This issue occurred because..."
+- Clearly explain:
+  - Root cause in business terms
+  - What has been changed
+- Include resolution using:
+  "To resolve this issue..."
+- End with:
+  "After these changes..."
+
+DEPENDENCIES/IMPACT:
+- Keep concise
+- Format strictly like:
+  "This change only impacts..."
+
+----------------------------------
+
+QUALITY RULES:
+
+- Use business-friendly language
+- Avoid unnecessary technical jargon
+- Ensure cause, fix, and outcome are clearly linked
+- Maintain clear paragraph structure (not bullet points)
+
+----------------------------------
 
 INPUT DEFECT DETAILS:
-{source_text[:12000]}
+{source_text[:5000]}
+
+----------------------------------
 
 OUTPUT:
-For ===RELEASE_NOTES=== provide ONLY the final DRN.
-
-For ===OVERVIEW=== provide a clear and simple summary that includes:
-- issue/requirement context,
-- as-is behaviour,
-- to-be behaviour,
-- business outcome.
-Write in 1-3 concise paragraphs so any reader can understand quickly.
-
-For ===TESTING_SCOPE=== follow these requirements exactly:
-- Cover positive, negative, edge, regression, data integrity, and performance (if applicable).
-- Use structured format with Scenario ID, Scenario Description, Pre-conditions, Test Steps (high level), Expected Result.
-- Pay special attention to backward compatibility, downstream/report impact, DB validations, and batch/job/process impact.
-- Include SQL validation queries and sample test-data conditions if applicable.
-- Keep concise but complete. Avoid generic statements.
-- Assume Sonata is a financial platform.
-- Output only test scenarios (no theory).
+Provide ONLY the final DRN.
 """
 
 
@@ -260,12 +276,14 @@ if st.button("🚀 Generate Release Notes, Overview and Testing Scope"):
             )
 
             output = response.choices[0].message.content
+            st.subheader(f"✅ Generated {selected_metadata['label']}")
+        if release_note_type == "ERN":
             parsed_output = parse_sections(output)
-
-        st.subheader(f"✅ Generated {selected_metadata['label']}")
-        st.text_area("Release Notes", parsed_output["release_notes"] or output, height=300)
-        st.text_area("Overview", parsed_output["overview"], height=200)
-        st.text_area("Testing Scope", parsed_output["testing_scope"], height=350)
+            st.text_area("Release Notes", parsed_output["release_notes"] or output, height=300)
+            st.text_area("Overview", parsed_output["overview"], height=200)
+            st.text_area("Testing Scope", parsed_output["testing_scope"], height=350)
+        else:
+            st.text_area("Output", output, height=400)
 
         file_name = f"{release_note_type.lower()}_release_note.txt"
         st.download_button(
