@@ -82,12 +82,21 @@ ERN RULES:
   4) Region/business impact sentence (global or region-specific)
   5) Glossary note when terms are used:
      "Note - For more information on the following terms - <terms>, please refer to Sonata Glossary."
-- Key Features must contain a **Demonstrable Additions** subsection with clear, client-facing points.
+- Overview should be written as 2-4 concise paragraphs (not a heading-only section).
+- Key Features must contain the exact subheading "Demonstrable Additions" followed by concise bullet points.
+- Key Features bullets should be client-observable outcomes (what the user sees), not implementation internals.
 - Menu Path must include Graphical Menu and Classic Menu when available from input. If not available, state "Not provided in source documentation.".
 - Implementation Considerations must never be empty. Use "No configuration required." only if no dependencies are indicated.
 - Impact/Dependencies must never be blank and should mention downstream impact, regression scope, and performance impact where relevant.
 - Do not include client names, Jira IDs, or internal-only instructions.
-- Do not include markdown bullets under headings unless it improves readability; keep concise and publish-ready.
+- Keep the note concise, publication-ready, and in plain business English.
+
+QUALITY CHECKS BEFORE FINALISING:
+1) Ensure there is no contradiction between Overview and Key Features.
+2) If the source says statuses like Active/Updated are considered active, reflect this in business terms.
+3) If scope is global, explicitly state "This enhancement is applicable globally."
+4) Do not repeat the same sentence across sections.
+5) Do not invent menu paths, regions, products, or dependencies.
 
 INPUT SOURCE (Design/BSD/IA/Jira):
 {source_text[:12000]}
