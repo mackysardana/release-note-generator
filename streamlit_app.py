@@ -124,7 +124,8 @@ INPUT SOURCE (Design/BSD/IA/Jira):
 {source_text[:12000]}
 
 OUTPUT:
-For ===RELEASE_NOTES=== provide ONLY the final ERN content.
+For ===RELEASE_NOTES=== provide ONLY the final ERN content using the exact ERN headings (Title, Overview, Key Features, Menu Path, Implementation Considerations, Impact/Dependencies).
+Do not place any of these six ERN sections in ===OVERVIEW=== or ===TESTING_SCOPE===.
 
 For ===OVERVIEW=== provide a detailed yet readable summary that includes:
 - issue/requirement context,
@@ -306,9 +307,26 @@ if st.button("🚀 Generate Release Notes, Overview and Testing Scope"):
             st.subheader(f"✅ Generated {selected_metadata['label']}")
         if release_note_type in {"ERN", "DRN"}:
             parsed_output = parse_sections(output, release_note_type)
-            overview_label = "High Level Details" if release_note_type == "ERN" else "Overview"
-            st.text_area("Release Notes", parsed_output["release_notes"] or output, height=300)
-            st.text_area(overview_label, parsed_output["overview"], height=220)
+            ern_release_notes = parsed_output["release_notes"]
+            if release_note_type == "ERN":
+                ern_headings = [
+                    "Title",
+                    "Overview",
+                    "Key Features",
+                    "Menu Path",
+                    "Implementation Considerations",
+                    "Impact/Dependencies",
+                ]
+                has_required_ern_structure = all(
+                    heading in ern_release_notes for heading in ern_headings
+                )
+                if not has_required_ern_structure and all(
+                    heading in parsed_output["overview"] for heading in ern_headings
+                ):
+                    ern_release_notes = parsed_output["overview"]
+
+            st.text_area("Release Notes", ern_release_notes or output, height=300)
+            st.text_area("Overview", parsed_output["overview"], height=220)
             st.text_area("Testing Scope", parsed_output["testing_scope"], height=350)
         else:
             st.text_area("Output", output, height=400)
