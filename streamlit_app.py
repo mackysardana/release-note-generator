@@ -81,44 +81,50 @@ Implementation Considerations
 Impact/Dependencies
 
 ERN RULES:
-- Use business-friendly language and avoid technical implementation detail unless needed for business clarity.
+- Generate the ERN only from the supplied source documentation. Do not invent functionality, menu paths, regions, configuration, products, or dependencies.
+- Use concise, professional Bravura Sonata Product Release Notes style. Avoid generic AI wording such as "This enhancement aims to...", "The expected business outcome...", repetitive filler, or unsupported benefit statements.
+- Use business-friendly language and avoid Java, SQL, APIs, database tables, code names, and internal implementation details unless they are required for business understanding.
+- Preserve business-visible Sonata terminology exactly as written in the source. Do not replace business names with generic English. Examples include Transaction Creation process, Contribution Transaction, No Effect deduction transaction, Include in MATS on Closure, MATS Submit, MATS Cancel, Expense Calculation Basis, Regular Fees/Rebates Parameters, From Employer Reserve, Insurance Premium Externally Funded Adhoc Increase, Insurance Premium Externally Funded Adhoc Decrease, and Lumpsum Payment/Transfer wizard.
 - Expand abbreviation at first use, e.g. "Enhancement Release Note (ERN)".
 - Title must be a single-line title matching these styles (do not add bullets or numbering):
   - "Sonata’s Account Investor Type determination enhanced to consider only active owner relationships, ensuring correct transition from Joint to Individual for accounts with deceased owners and thus improving ownership accuracy"
   - "Australian Superannuation - Enhancements to Reconcile Unpaid Refunds and Identify Source of Refund Reports to Improve CTR Refund Reconciliation and Reporting Accuracy"
   - "Australian Superannuation - Sonata enhancement introduces Reconcile Unpaid Refunds and Identify Source of Refund reports, improving visibility of CTR refund, enabling reconciliation, monitoring timelines, analysing system vs manual refund trends"
   - "Australian Superannuation - Load Contribution Schedule (SuperStream) process enhancement enables automated handling of CTR exceptions using configurable Schedule Auto Rejection Rules to support Pay Day Super compliance"
-- Overview must include, in this order:
-  1) What was enhanced (clear change overview with business context)
-  2) A dedicated rationale paragraph beginning exactly with: "The rationale behind this enhancement is..."
-  3) A dedicated prior-state paragraph beginning exactly with: "Prior to this enhancement..."
-  4) A clear to-be behavior paragraph describing what changes now and for whom
-  5) Region/business impact sentence (global or region-specific)
-  6) Glossary note when terms are used:
-     "Note - For more information on the following terms - <terms>, please refer to Sonata Glossary."
-- Overview should be written as 4-6 detailed paragraphs and must clearly separate as-is vs to-be behavior.
-- Overview should include concrete business context, impacted users/processes, scope boundaries, explicit before-vs-after comparison, and operational outcome.
-- The Overview must feel narrative and publication-ready, not generic; avoid one-line paragraphs.
-- Key Features must contain the exact subheading "Demonstrable Additions" followed by detailed bullet points (no numbering).
-- Include 8-12 feature bullets where possible, each describing: capability, trigger/context, prior limitation addressed, and business value/outcome.
-- In Demonstrable Additions, include business-observable outcomes such as:
-  - investor type is determined using active owner relationships only;
-  - deceased/deleted owner relationships are excluded from owner counts;
-  - account investor type changes to Individual when only one active owner remains;
-  - account investor type remains Joint when multiple active owners remain.
-- You may mention enabling mechanisms (e.g., relationship-status tagging like activeRelationship=true) only when essential for business understanding; keep implementation detail minimal.
-- Menu Path must include Graphical Menu and Classic Menu when available from input. If not available, state "Not provided in source documentation.".
-- Implementation Considerations must never be empty. Use "No configuration required." only if no dependencies are indicated.
-- Impact/Dependencies must never be blank and should mention downstream impact, regression scope, and performance impact where relevant.
+- Overview must include the organisation's mandatory paragraphs in this order:
+  1) Begin with a concise description of the enhancement and the relevant business context.
+  2) Include a dedicated rationale paragraph beginning exactly with: "The rationale behind this enhancement is...". After this mandatory phrase, provide specific business reasons from the source; avoid repeating the title or using vague benefit statements.
+  3) Include a dedicated previous-behaviour paragraph beginning exactly with: "Prior to this enhancement...". After this mandatory phrase, describe only useful source-based previous behaviour, gaps, manual effort, reporting limitation, or operational constraint.
+  4) Describe the new behaviour, including each business-visible process, transaction, report, field, configuration, validation, checkbox, or extraction logic without merging separate enhancements.
+  5) Describe operational or business benefit using source-supported outcomes.
+- Overview must mention a region only when the source explicitly states one. If no region is stated, do not add a global or region-specific sentence.
+- Overview should be narrative, publication-ready, non-repetitive, and detailed enough to preserve all business-visible solution details without collapsing multiple enhancements into one sentence.
+- Overview should be written as 3-6 concise paragraphs. Avoid one-line paragraphs unless the source is very limited.
+- Include a glossary note only when glossary terms are clearly identified in the source. Use: "Note - For more information on the following terms - <terms>, please refer to Sonata Glossary."
+- Key Features must contain the exact subheading "Demonstrable Additions" followed by bullet points (no numbering).
+- Generate one bullet for every business enhancement. Do not combine multiple enhancements into one bullet.
+- Every new process, wizard, report, transaction, configuration, parameter, checkbox, attribute, menu, screen, validation, batch, extraction rule, field, or mapping must appear as its own Key Features bullet when present in the source.
+- Key Features bullets should describe the business-visible capability or change, the relevant trigger/context, and the business outcome where the source supports it. Avoid generic benefit-only bullets.
+- Preserve Graphical Menu and Classic Menu paths exactly when they are present in the source. Never invent menu paths. If no menu path is available, state "Not provided in source documentation.".
+- Implementation Considerations must preserve all configuration details stated in the source, including configuration paths, parameter names, check boxes, mappings, expense setup, product setup, static data, and reporting configuration.
+- Output "No configuration required." only when the source contains absolutely no configuration, setup, mapping, or operational adoption requirements.
+- Impact/Dependencies must list impacted Sonata components and business processes rather than generic statements. Examples include Pricing, Insurance, Account Closure, Contribution Transaction Creation, Contribution History, MATS Reporting, ATO Reporting, Adhoc Fee Processing, and Lumpsum Payment/Transfer.
+- Detail preservation is mandatory: every new transaction, process, report, field, configuration, parameter, validation, extraction logic, checkbox, menu, screen, batch, and mapping from the source must appear in the ERN.
 - Do not include client names, Jira IDs, or internal-only instructions.
 - Keep the note concise, publication-ready, and in plain business English.
 
 QUALITY CHECKS BEFORE FINALISING:
-1) Ensure there is no contradiction between Overview and Key Features.
-2) If the source says statuses like Active/Updated are considered active, reflect this in business terms.
-3) If scope is global, explicitly state "This enhancement is applicable globally."
-4) Do not repeat the same sentence across sections.
-5) Do not invent menu paths, regions, products, or dependencies.
+1) Confirm every business enhancement in the source is captured in the ERN.
+2) Confirm configuration, setup, mappings, check boxes, parameters, paths, and reporting details are preserved.
+3) Confirm business terminology is preserved exactly as written in the source.
+4) Confirm Graphical Menu and Classic Menu paths are preserved exactly when present, and no menu path is invented.
+5) Confirm no functionality, region, product, dependency, validation, configuration, or benefit has been invented.
+6) Confirm there are no duplicated or combined Key Features bullets for separate enhancements.
+7) Confirm mandatory Overview paragraphs beginning "The rationale behind this enhancement is..." and "Prior to this enhancement..." are present, rich, non-repetitive, and source-specific.
+8) Confirm generic AI wording has been removed while preserving the mandatory Overview phrases.
+9) Confirm the output resembles official Bravura Sonata Product Release Notes.
+10) Ensure there is no contradiction between Overview and Key Features.
+11) Do not repeat the same sentence across sections.
 
 INPUT SOURCE (Design/BSD/IA/Jira):
 {source_text[:12000]}
