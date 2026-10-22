@@ -264,8 +264,6 @@ def _normalise_marker(line: str) -> str:
     return line.strip().replace("*", "").replace("`", "")
 
 
-
-
 def parse_sections(output: str, note_type: str):
     sections = {"release_notes": "", "overview": "", "testing_scope": ""}
     markers = {
@@ -285,7 +283,6 @@ def parse_sections(output: str, note_type: str):
             sections[current_key] += (line + "\n")
 
     parsed = {k: v.strip() for k, v in sections.items()}
-
     return parsed
 
 
