@@ -330,7 +330,7 @@ if st.button("🚀 Generate Release Notes, Overview and Testing Scope"):
     try:
         with st.spinner("Generating Release Notes, Overview and Testing Scope..."):
             response = client.chat.completions.create(
-                model="openai/gpt-oss-120b",
+                model="/gpt-oss-120b",
                 messages=[
                     {
                         "role": "system",
